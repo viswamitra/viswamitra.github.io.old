@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[My Octopress Blog]]></title>
+  <title><![CDATA[Binary Skeptic]]></title>
   <link href="http://viswamitra.github.io/atom.xml" rel="self"/>
   <link href="http://viswamitra.github.io/"/>
-  <updated>2014-12-24T19:16:59+05:30</updated>
+  <updated>2014-12-24T19:33:10+05:30</updated>
   <id>http://viswamitra.github.io/</id>
   <author>
-    <name><![CDATA[Your Name]]></name>
-    
+    <name><![CDATA[Abhiram]]></name>
+    <email><![CDATA[abhiram.visawamitra@gmail.com]]></email>
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
