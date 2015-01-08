@@ -4,7 +4,7 @@
   <title><![CDATA[Binary Skeptic]]></title>
   <link href="http://viswamitra.github.io/atom.xml" rel="self"/>
   <link href="http://viswamitra.github.io/"/>
-  <updated>2014-12-24T19:33:10+05:30</updated>
+  <updated>2015-01-09T02:32:23+05:30</updated>
   <id>http://viswamitra.github.io/</id>
   <author>
     <name><![CDATA[Abhiram]]></name>
@@ -14,11 +14,11 @@
 
   
   <entry>
-    <title type="html"><![CDATA[Hello World]]></title>
-    <link href="http://viswamitra.github.io/blog/2014/12/24/hello-world/"/>
-    <updated>2014-12-24T18:28:36+05:30</updated>
-    <id>http://viswamitra.github.io/blog/2014/12/24/hello-world</id>
-    <content type="html"><![CDATA[<p>This is the first post. Hello World.</p>
+    <title type="html"><![CDATA[Setting Up Your Repository Layer]]></title>
+    <link href="http://viswamitra.github.io/blog/2015/01/09/setting-up-your-repository-layer/"/>
+    <updated>2015-01-09T02:28:38+05:30</updated>
+    <id>http://viswamitra.github.io/blog/2015/01/09/setting-up-your-repository-layer</id>
+    <content type="html"><![CDATA[<p>Setting up repository layer.</p>
 ]]></content>
   </entry>
   
