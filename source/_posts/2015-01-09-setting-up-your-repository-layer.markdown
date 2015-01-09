@@ -9,6 +9,8 @@ When writing a three tier enterprise application, you would always have to write
 
 First let us set up a ORM independent repository interface, which defines the crud actions that we want our repositories to have.
 
-{% gist 9186572abe4a370c06d6 GenericRepositoryIface.java %}
+{% include_code GenericRepositoryIface.java %}
+
+
 
 
