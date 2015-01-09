@@ -9,8 +9,7 @@
   <meta name="author" content="Abhiram">
 
   
-  <meta name="description" content="Hello, 1
-Awesome code snippet ">
+  <meta name="description" content="When writing a three tier enterprise application, you would always have to write a DAO or a Repository layer, which would interface with your &hellip;">
   
 
   <!-- http://t.co/dKP3o1e -->
@@ -106,10 +105,17 @@ Awesome code snippet ">
   </header>
 
 
-<div class="entry-content"><p>Hello,</p>
+<div class="entry-content"><p>When writing a three tier enterprise application, you would always have to write a DAO or a Repository layer, which would interface with your transactional entities. Specifically in java enterprise world, when you are using ORMs, you would have to write repositories in JPA specification or use Hibernate directly. Many libraries have extensive support for both, but it is considered a general good practice to use JPA, as it is a specification and is vendor independent. After working on some similar enterprise applications, let me give you a brief gist of how I organize my repositories, so that the domain specific transactional methods are separated out of the ORM specific transactional methods.</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>Awesome code snippet</span></code></pre></td></tr></table></div></figure>
+<p>First let us set up a ORM independent repository interface, which defines the crud actions that we want our repositories to have.</p>
+
+<div><script src='https://gist.github.com/9186572abe4a370c06d6.js?file=GenericRepositoryIface.java'></script>
+<noscript><pre><code>public interface GenericRepositoryIface&lt;T, ID extends Serializable&gt; {
+    public void persist(T entity);
+    public List&lt;T&gt; findAll();
+    public T findOne(ID id);
+    public void delete(T t);
+}</code></pre></noscript></div>
 
 
 
@@ -138,6 +144,12 @@ Awesome code snippet ">
 <time class='entry-date' datetime='2015-01-09T02:28:38+05:30'><span class='date'><span class='date-month'>Jan</span> <span class='date-day'>9</span><span class='date-suffix'>th</span>, <span class='date-year'>2015</span></span> <span class='time'>2:28 am</span></time>
       
       
+
+<span class="categories">
+  
+    <a class='category' href='/blog/categories/enterprise/'>enterprise</a>, <a class='category' href='/blog/categories/java/'>java,</a>, <a class='category' href='/blog/categories/jpa/'>jpa,</a>
+  
+</span>
 
 
     </p>

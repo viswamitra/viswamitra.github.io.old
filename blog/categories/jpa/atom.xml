@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[Binary Skeptic]]></title>
-  <link href="http://viswamitra.github.io/atom.xml" rel="self"/>
+  <title><![CDATA[Category: Jpa, | Binary Skeptic]]></title>
+  <link href="http://viswamitra.github.io/blog/categories/jpa/atom.xml" rel="self"/>
   <link href="http://viswamitra.github.io/"/>
   <updated>2015-01-09T16:09:57+05:30</updated>
   <id>http://viswamitra.github.io/</id>
@@ -22,16 +22,14 @@
 
 <p>First let us set up a ORM independent repository interface, which defines the crud actions that we want our repositories to have.</p>
 
-<div><script src='https://gist.github.com/9186572abe4a370c06d6.js?file=GenericRepositoryIface.java'></script>
+<p><div><script src='https://gist.github.com/9186572abe4a370c06d6.js?file=GenericRepositoryIface.java'></script>
 <noscript><pre><code>public interface GenericRepositoryIface&lt;T, ID extends Serializable&gt; {
-    public void persist(T entity);
-    public List&lt;T&gt; findAll();
-    public T findOne(ID id);
-    public void delete(T t);
+	public void persist(T entity);
+	public List&lt;T&gt; findAll();
+	public T findOne(ID id);
+	public void delete(T t);
 }</code></pre></noscript></div>
-
-
-
+</p>
 ]]></content>
   </entry>
   
