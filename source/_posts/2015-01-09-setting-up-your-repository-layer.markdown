@@ -11,6 +11,38 @@ First let us set up a ORM independent repository interface, which defines the cr
 
 {% include_code GenericRepositoryIface.java %}
 
+As we can see, this interface has the basic crud methods of our entities. Adding generics makes it.. generic :). 
+
+Now, let us have a concrete implementation of this interface, which will implement these methods. I'm going to use JPA specification here. 
+
+{% include_code GenericRepositoryImpl.java %}
+
+This class takes an EntityManager(which can be either Provided at the start of the application, or injected) and implements the methods from the interface. 
+
+Moving on, let us actually come to the domain specific repositories that actually deal with the domain Entities. As with the previous design, let us use interfaces to define the required methods, and have concrete implementations separately.
+
+Let us have an AccountRepositoryInterface, which will find an account from the database, given necessary account details.
+
+{% include_code AccountRepositoryIface.java %}
+
+This interface contains one method - findAccount which searches based on orderItemId and accountId. Finally, let us have a concrete implementation of 
+this interface. 
+
+{% include_code AccountRepositoryImpl.java %}
+
+As you can see, we have neatly abstracted interfaces and concrete implementations, in both the domain specific repositories as well as crud based repositories. This kind of alignment will help writing focused domain repositories without being concerned about the internal crud methods, since they are abstracted out.
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
