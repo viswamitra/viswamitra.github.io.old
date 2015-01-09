@@ -4,7 +4,7 @@
   <title><![CDATA[Binary Skeptic]]></title>
   <link href="http://viswamitra.github.io/atom.xml" rel="self"/>
   <link href="http://viswamitra.github.io/"/>
-  <updated>2015-01-09T16:10:52+05:30</updated>
+  <updated>2015-01-09T20:31:57+05:30</updated>
   <id>http://viswamitra.github.io/</id>
   <author>
     <name><![CDATA[Abhiram]]></name>
@@ -22,16 +22,154 @@
 
 <p>First let us set up a ORM independent repository interface, which defines the crud actions that we want our repositories to have.</p>
 
-<div><script src='https://gist.github.com/9186572abe4a370c06d6.js?file=GenericRepositoryIface.java'></script>
-<noscript><pre><code>public interface GenericRepositoryIface&lt;T, ID extends Serializable&gt; {
-    public void persist(T entity);
-    public List&lt;T&gt; findAll();
-    public T findOne(ID id);
-    public void delete(T t);
-}</code></pre></noscript></div>
+<figure class='code'><figcaption><span> (GenericRepositoryIface.java)</span> <a href='http://viswamitra.github.io/downloads/code/GenericRepositoryIface.java'>download</a></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">GenericRepositoryIface</span><span class="o">&lt;</span><span class="n">T</span><span class="o">,</span> <span class="n">ID</span> <span class="kd">extends</span> <span class="n">Serializable</span><span class="o">&gt;</span> <span class="o">{</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">persist</span><span class="o">(</span><span class="n">T</span> <span class="n">entity</span><span class="o">);</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="nf">findAll</span><span class="o">();</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="n">T</span> <span class="nf">findOne</span><span class="o">(</span><span class="n">ID</span> <span class="n">id</span><span class="o">);</span>
+</span><span class='line'>  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">delete</span><span class="o">(</span><span class="n">T</span> <span class="n">t</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
+<p>As we can see, this interface has the basic crud methods of our entities. Adding generics makes it.. generic :).</p>
 
+<p>Now, let us have a concrete implementation of this interface, which will implement these methods. I&rsquo;m going to use JPA specification here.</p>
+
+<figure class='code'><figcaption><span> (GenericRepositoryImpl.java)</span> <a href='http://viswamitra.github.io/downloads/code/GenericRepositoryImpl.java'>download</a></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">GenericRepositoryImpl</span><span class="o">&lt;</span><span class="n">T</span><span class="o">,</span> <span class="n">ID</span> <span class="kd">extends</span> <span class="n">Serializable</span><span class="o">&gt;</span>
+</span><span class='line'>    <span class="kd">implements</span> <span class="n">GenericRepositoryIface</span><span class="o">&lt;</span><span class="n">T</span><span class="o">,</span> <span class="n">ID</span><span class="o">&gt;</span> <span class="o">{</span>
+</span><span class='line'>
+</span><span class='line'>          <span class="kd">private</span> <span class="kd">final</span> <span class="n">EntityManager</span> <span class="n">entityManager</span><span class="o">;</span>         
+</span><span class='line'>
+</span><span class='line'>          <span class="kd">public</span> <span class="nf">SimpleJpaGenericRepository</span><span class="o">(</span><span class="n">EntityManager</span> <span class="n">entityManager</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>           <span class="k">this</span><span class="o">.</span><span class="na">entityManager</span> <span class="o">=</span> <span class="n">entityManager</span><span class="o">;</span>     
+</span><span class='line'>          <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>          <span class="kd">protected</span> <span class="n">EntityManager</span> <span class="nf">getEntityManager</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>          <span class="k">return</span> <span class="n">entityManager</span><span class="o">;</span>
+</span><span class='line'>          <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>          <span class="nd">@Override</span>
+</span><span class='line'>          <span class="kd">public</span> <span class="kt">void</span> <span class="nf">persist</span><span class="o">(</span><span class="n">T</span> <span class="n">t</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>          <span class="n">getEntityManager</span><span class="o">().</span><span class="na">persist</span><span class="o">(</span><span class="n">t</span><span class="o">);</span>
+</span><span class='line'>          <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>          <span class="nd">@Override</span>
+</span><span class='line'>          <span class="kd">public</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="nf">findAll</span><span class="o">()</span> <span class="o">{</span>
+</span><span class='line'>          <span class="k">return</span> <span class="nf">getEntityManager</span><span class="o">()</span>
+</span><span class='line'>              <span class="o">.</span><span class="na">createQuery</span><span class="o">(</span><span class="s">&quot;select x from &quot;</span> <span class="o">+</span> <span class="n">entityClass</span><span class="o">.</span><span class="na">getSimpleName</span><span class="o">()</span> <span class="o">+</span> <span class="s">&quot; x&quot;</span><span class="o">)</span>
+</span><span class='line'>              <span class="o">.</span><span class="na">getResultList</span><span class="o">();</span>
+</span><span class='line'>          <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>          <span class="nd">@Override</span>
+</span><span class='line'>          <span class="kd">public</span> <span class="n">Optional</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span> <span class="nf">findOne</span><span class="o">(</span><span class="n">ID</span> <span class="n">id</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>          <span class="k">return</span> <span class="n">Optional</span><span class="o">.</span><span class="na">fromNullable</span><span class="o">(</span><span class="n">getEntityManager</span><span class="o">().</span><span class="na">find</span><span class="o">(</span><span class="n">entityClass</span><span class="o">,</span> <span class="n">id</span><span class="o">));</span>
+</span><span class='line'>          <span class="o">}</span>
+</span><span class='line'>
+</span><span class='line'>
+</span><span class='line'>          <span class="nd">@Override</span>
+</span><span class='line'>          <span class="kd">public</span> <span class="kt">void</span> <span class="nf">delete</span><span class="o">(</span><span class="n">T</span> <span class="n">t</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>          <span class="n">getEntityManager</span><span class="o">().</span><span class="na">remove</span><span class="o">(</span><span class="n">t</span><span class="o">);</span>
+</span><span class='line'>          <span class="o">}</span>
+</span><span class='line'>   <span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This class takes an EntityManager(which can be either Provided at the start of the application, or injected) and implements the methods from the interface.</p>
+
+<p>Moving on, let us actually come to the domain specific repositories that actually deal with the domain Entities. As with the previous design, let us use interfaces to define the required methods, and have concrete implementations separately.</p>
+
+<p>Let us have an AccountRepositoryInterface, which will find an account from the database, given necessary account details.</p>
+
+<figure class='code'><figcaption><span> (AccountRepositoryIface.java)</span> <a href='http://viswamitra.github.io/downloads/code/AccountRepositoryIface.java'>download</a></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">AccountRepositoryIface</span> <span class="kd">extends</span> <span class="n">GenericRepositoryIface</span><span class="o">&lt;</span><span class="n">Account</span><span class="o">,</span> <span class="n">Long</span><span class="o">&gt;</span> <span class="o">{</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Account</span><span class="o">&gt;</span> <span class="nf">findAccount</span><span class="o">(</span><span class="n">Long</span> <span class="n">orderItemId</span><span class="o">,</span> <span class="n">String</span> <span class="n">accountId</span><span class="o">);</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>This interface contains one method - findAccount which searches based on orderItemId and accountId. Finally, let us have a concrete implementation of
+this interface.</p>
+
+<figure class='code'><figcaption><span> (AccountRepositoryImpl.java)</span> <a href='http://viswamitra.github.io/downloads/code/AccountRepositoryImpl.java'>download</a></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+</pre></td><td class='code'><pre><code class='java'><span class='line'><span class="kd">public</span> <span class="kd">class</span> <span class="nc">AccountRepositoryImpl</span> <span class="kd">extends</span> <span class="n">GenericRepositoryImpl</span><span class="o">&lt;</span><span class="n">Account</span><span class="o">,</span><span class="n">Long</span><span class="o">&gt;</span>
+</span><span class='line'>        <span class="kd">implements</span> <span class="n">AccountRepositoryIface</span> <span class="o">{</span>
+</span><span class='line'>    <span class="nd">@Inject</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="nf">AccountRepositoryImpl</span><span class="o">(</span><span class="n">EntityManager</span> <span class="n">entityManager</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>        <span class="kd">super</span><span class="o">(</span><span class="n">entityManager</span><span class="o">);</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'>    <span class="kd">public</span> <span class="n">List</span><span class="o">&lt;</span><span class="n">Account</span><span class="o">&gt;</span> <span class="nf">findAccount</span><span class="o">(</span><span class="n">Long</span> <span class="n">orderItemId</span><span class="o">,</span> <span class="n">String</span> <span class="n">accountId</span><span class="o">)</span> <span class="o">{</span>
+</span><span class='line'>           <span class="k">return</span> <span class="nf">getEntityManager</span><span class="o">().</span><span class="na">createQuery</span><span class="o">(</span><span class="s">&quot;select ft from Account ft where ft.orderItemId = :orderItemId and ft.accountId = :accountId&quot;</span><span class="o">,</span>
+</span><span class='line'>                   <span class="n">Account</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+</span><span class='line'>                   <span class="o">.</span><span class="na">setParameter</span><span class="o">(</span><span class="s">&quot;orderItemId&quot;</span><span class="o">,</span> <span class="n">orderItemId</span><span class="o">)</span>
+</span><span class='line'>                   <span class="o">.</span><span class="na">setParameter</span><span class="o">(</span><span class="s">&quot;accountId&quot;</span><span class="o">,</span> <span class="n">accountId</span><span class="o">)</span>
+</span><span class='line'>                   <span class="o">.</span><span class="na">getResultList</span><span class="o">();</span>
+</span><span class='line'>    <span class="o">}</span>
+</span><span class='line'><span class="o">}</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>As you can see, we have neatly abstracted interfaces and concrete implementations, in both the domain specific repositories as well as crud based repositories. This kind of alignment will help writing focused domain repositories without being concerned about the internal crud methods, since they are abstracted out.</p>
 ]]></content>
   </entry>
   
