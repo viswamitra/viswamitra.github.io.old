@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[Category: Concurrency | Binary Skeptic]]></title>
+  <link href="http://viswamitra.github.io/blog/categories/concurrency/atom.xml" rel="self"/>
+  <link href="http://viswamitra.github.io/"/>
+  <updated>2015-02-02T03:00:10+05:30</updated>
+  <id>http://viswamitra.github.io/</id>
+  <author>
+    <name><![CDATA[Abhiram]]></name>
+    <email><![CDATA[abhiram.visawamitra@gmail.com]]></email>
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[Configuring Jetty Threads in Dropwizard]]></title>
+    <link href="http://viswamitra.github.io/blog/2015/01/31/those-threads-in-dropwizard/"/>
+    <updated>2015-01-31T02:18:19+05:30</updated>
+    <id>http://viswamitra.github.io/blog/2015/01/31/those-threads-in-dropwizard</id>
+    <content type="html"><![CDATA[<p>We use Dropwizard framework for writing web applications at work, as it is nifty, out of the box, and production ready. While this post is not about Dropwizard framework in specific, I would like to share some interesting insights into what I have learnt while configuring threads for Jetty, the HTTP server, which comes as a part of Dropwizard. Dropwizard takes a configuration based approach to set various module configurations for your application like logging, metrics, server details, database etc.</p>
+
+<p>This post digs into detail about the thread configuration for Jetty in Dropwizard, and some results and observations from experiments.</p>
+
+<!--more-->
+
+
+<p>An example server settings configuration file looks like this:</p>
+
+<p><figure class='code'><figcaption><span> (server_config.yml)</span> <a href='/downloads/code/server_config.yml'>download</a></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+</pre></td><td class='code'><pre><code class='yaml'><span class='line'><span class="l-Scalar-Plain">server</span><span class="p-Indicator">:</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">default</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">maxThreads</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">100</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">minThreads</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">100</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">applicationConnectors</span><span class="p-Indicator">:</span>
+</span><span class='line'>    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">http</span>
+</span><span class='line'>      <span class="l-Scalar-Plain">port</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">14041</span>
+</span><span class='line'>      <span class="l-Scalar-Plain">acceptorThreads</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">8</span>
+</span><span class='line'>      <span class="l-Scalar-Plain">selectorThreads</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">16</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">adminConnectors</span><span class="p-Indicator">:</span>
+</span><span class='line'>    <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">http</span>
+</span><span class='line'>      <span class="l-Scalar-Plain">port</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">14042</span>
+</span><span class='line'>  <span class="l-Scalar-Plain">requestLog</span><span class="p-Indicator">:</span>
+</span><span class='line'>    <span class="l-Scalar-Plain">timeZone</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">IST</span>
+</span><span class='line'>    <span class="l-Scalar-Plain">appenders</span><span class="p-Indicator">:</span>
+</span><span class='line'>      <span class="p-Indicator">-</span> <span class="l-Scalar-Plain">type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">file</span>
+</span><span class='line'>        <span class="l-Scalar-Plain">currentLogFilename</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">./logs/access.log</span>
+</span><span class='line'>        <span class="l-Scalar-Plain">threshold</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">INFO</span>
+</span><span class='line'>        <span class="l-Scalar-Plain">archive</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">true</span>
+</span><span class='line'>        <span class="l-Scalar-Plain">archivedLogFilenamePattern</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">./logs/access-%d{yyyy-MM-dd-HH}.log.gz</span>
+</span><span class='line'>        <span class="l-Scalar-Plain">archivedFileCount</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">50</span>
+</span><span class='line'>        <span class="l-Scalar-Plain">timeZone</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">IST</span>
+</span></code></pre></td></tr></table></div></figure></p>
+
+<p>Let us go through some important things in this configuration file, in a little more detail:</p>
+
+<p><em>MinThreads</em> - The minimum number of threads created at the start of its application.  <br/>
+<em>MaxThreads</em> - The maximum number of threads that can be created by the application. (This will be on an on demand basis. More of this later). <br/>
+<em>AcceptorThreads</em> - The threads that accept new connections from client. By default this will be set to numberOfCores/2. <br/>
+<em>SelectorThreads</em> - The threads that look after the activity on a socket. This includes checking the IO activity on the socket. By default this will be set to numberOfCores.</p>
+
+<p>Let me list out some of the experiments that I did with the thread configurations.
+Note: I am running on a machine with 4 cores, and 8GB of RAM.</p>
+
+<h2>Experiment-1:</h2>
+
+<ul>
+<li>minThread and maxThread set to 8.</li>
+</ul>
+
+
+<p><figure class='code'><figcaption><span>[setting only min and max threads]  </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>server:
+</span><span class='line'>  type: default
+</span><span class='line'>  maxThreads: 8
+</span><span class='line'>  minThreads: 8</span></code></pre></td></tr></table></div></figure></p>
+
+<h3>Result:</h3>
+
+<p><img src="/images/posts/threads_8.jpg"></p>
+
+<h3>Observation:</h3>
+
+<p>dw-[18..21] are selector threads, and dw[22..23] are acceptor threads. There are other threads that are in waiting state, and dedicated threads allocated for admin port. So, for each connector, the min and max thread rule applies, keeping in bound of the default selector and acceptor thread configuration values (which is dependent on the number of cores your machine has). In this configuration, since there are acceptor threads available, connections are being made and requests are served.</p>
+
+<h2>Experiment-2:</h2>
+
+<ul>
+<li>Set both MinThread and MaxThread values, and also the acceptorThread and selectorThread values.</li>
+</ul>
+
+
+<p><figure class='code'><figcaption><span>[setting only min and max threads]  </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>server:
+</span><span class='line'>  type: default
+</span><span class='line'>  maxThreads: 8
+</span><span class='line'>  minThreads: 8
+</span><span class='line'>  applicationConnectors:
+</span><span class='line'>    - type: http
+</span><span class='line'>      port: 14041
+</span><span class='line'>      acceptorThreads: 8
+</span><span class='line'>      selectorThreads: 16</span></code></pre></td></tr></table></div></figure></p>
+
+<h3>Result:</h3>
+
+<p><img src="/images/posts/thread_blocker.png"></p>
+
+<h3>Observation:</h3>
+
+<p>So, we see that selectorThreads take the preference, and dw-[18..25] are created first. Since our maxThread upper bound is set to 8, all the created 8 threads are only selector threads, we see that there are no acceptor threads created at all. We will not be able to establish any client connections and make calls, and any attempts to do so will block your client.</p>
+
+<h2>Experiment-3:</h2>
+
+<ul>
+<li>setting the minThread and maxThread to really big values.</li>
+</ul>
+
+
+<p><figure class='code'><figcaption><span>[large lower and upper bounds for threads]  </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>server:
+</span><span class='line'>  type: default
+</span><span class='line'>  maxThreads: 100
+</span><span class='line'>  minThreads: 8
+</span><span class='line'>  applicationConnectors:
+</span><span class='line'>    - type: http
+</span><span class='line'>      port: 14041
+</span><span class='line'>      acceptorThreads: 50
+</span><span class='line'>      selectorThreads: 50</span></code></pre></td></tr></table></div></figure></p>
+
+<h3>Observation:</h3>
+
+<p>Here, we have 50 acceptor and 50 selector threads created, as the configuration file says. The minThread configuration key is overridden by the acceptor/selector Thread configurations.</p>
+
+<h2>Summing it up:</h2>
+
+<ul>
+<li>Selector Threads will be initialized first, and then if your configuration allows for more, acceptor threads will be created.</li>
+<li>Number of selector threads will be equal to number of cores of your system, and acceptor threads will be (number of cores)/2, unless otherwise specified.</li>
+<li>It is not recommended to hardwire acceptorThreads and selectorThread configuration values, unless you know what you are doing.</li>
+<li>Rule of thumb is leave the thread configuration to default, and default max thread value is 1024.</li>
+<li>The right number of acceptor threads is defined by the connection open/close rate. More the rate, more acceptors we want.</li>
+<li>If the server is busy, (100K or more connections at a time), it is better to use more selectors to even out the connection load amongst selectors, each selector has a limit of 64k connections.</li>
+</ul>
+
+
+<h2>References:</h2>
+
+<ul>
+<li><a href="http://dropwizard.io/">Dropwizard</a></li>
+<li><a href="http://eclipse.org/jetty/">Jetty</a></li>
+</ul>
+
+]]></content>
+  </entry>
+  
+</feed>
