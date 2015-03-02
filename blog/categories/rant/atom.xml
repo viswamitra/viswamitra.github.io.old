@@ -4,7 +4,7 @@
   <title><![CDATA[Category: Rant | Abhiram Viswamitra]]></title>
   <link href="http://viswamitra.github.io/blog/categories/rant/atom.xml" rel="self"/>
   <link href="http://viswamitra.github.io/"/>
-  <updated>2015-03-02T20:32:53+05:30</updated>
+  <updated>2015-03-02T20:54:37+05:30</updated>
   <id>http://viswamitra.github.io/</id>
   <author>
     <name><![CDATA[Abhiram]]></name>
@@ -29,7 +29,7 @@
 
 <p>Scaling a system horizontally doesn&rsquo;t necessarily increase the response time. As very rightly pointed out <a href="http://use-the-index-luke.com/sql/testing-scalability/response-time-throughput-scaling-horizontal">here</a>, horizontal scaling is just like adding more lanes to a high traffic road. It need not necessarily make the traffic move faster, it just accomodates more traffic at any given time. But that would still serve the purpose. Because tuning your application to get that extra juice out of your apis, will take time and effort, and not everyone has it. Not every team, or business requirement caters to it. If business demands scale, easiest way would be to set up the service on an auto scaling architecture.</p>
 
-<p>Let me give you an example, you wrote a service and it gives you a 300 ms response time. You believe you&rsquo;ve done an OK job, you are not specifically proud of this, and you&rsquo;ve done better jobs before. So, deadlines are approaching and you need to ship this out. You have a throughput of 3 requests per second per core. You extrapolate your numbers and give your manager the bill - number of machines needed. He takes your word and haunts dev ops for the machines. Heard the story before? May be you have :).</p>
+<p>Let me give you an example, you wrote a service and it gives you a 300 ms response time. You believe you&rsquo;ve done an OK job, you are not specifically proud of this, and you&rsquo;ve done better jobs before. So, deadlines are approaching and you need to ship this out. Assuming that the IO on this is minimum, and the 300 ms is just CPU processing, you have a throughput of 3 requests per second per core. You extrapolate your numbers and give your manager the bill - number of machines needed. He takes your word and haunts dev ops for the machines. Heard the story before? May be you have :).</p>
 
 <p>Surround your pullquote like this {&#8221; text to be quoted &#8220;}</p>
 
