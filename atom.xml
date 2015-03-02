@@ -4,7 +4,7 @@
   <title><![CDATA[Abhiram Viswamitra]]></title>
   <link href="http://viswamitra.github.io/atom.xml" rel="self"/>
   <link href="http://viswamitra.github.io/"/>
-  <updated>2015-03-02T20:01:17+05:30</updated>
+  <updated>2015-03-02T20:32:53+05:30</updated>
   <id>http://viswamitra.github.io/</id>
   <author>
     <name><![CDATA[Abhiram]]></name>
@@ -15,20 +15,29 @@
   
   <entry>
     <title type="html"><![CDATA[Throughput, Response Time and Money!]]></title>
-    <link href="http://viswamitra.github.io/blog/2015/03/02/block-quote/"/>
+    <link href="http://viswamitra.github.io/blog/2015/03/02/throughput-response-time-and-money/"/>
     <updated>2015-03-02T14:12:23+05:30</updated>
-    <id>http://viswamitra.github.io/blog/2015/03/02/block-quote</id>
-    <content type="html"><![CDATA[<p>For any successful web service that runs on scale, two of the most important factors that need to be considered are - throughput and response time. Throughput is the total requests that your web service can churn out to the external world, where as response time is the time taken for single request to be executed on your server. Both of these contribute to the final goal - serving better scale.</p>
+    <id>http://viswamitra.github.io/blog/2015/03/02/throughput-response-time-and-money</id>
+    <content type="html"><![CDATA[<p>For any successful web service that runs on scale, two of the most important factors that need to be considered are - Throughput and Response Time. <em>Throughput</em> is the total requests that your web service can churn out to the world, where as <em>Response Time</em> is the time taken for single request to be executed on your server. Both of these contribute to the final goal - serving better scale.</p>
 
-<p>However, there is this debate about what is better, and when. If you ask an engineer working in a start up, the answer would probably be response time, since they need to be careful about how many machines they can spend to scale. Where as if you ask a veteran engineer from a multi billion dollar giant, you would probably hear, &ldquo;throw more machines at it.&rdquo; I&rsquo;m not saying that engineers from bigger companies do not build their services well, but it all boils down to the amount of time and money they have in hand.</p>
+<p>However, there is a never ending debate about what is better, and when.</p>
 
-<p>Scaling a system horizontally doesn&rsquo;t necessarily increase the response time. As very rightly pointed out here, it is just like adding more lanes in a high traffic road. It need not necessarily make the traffic move faster, it just accomodates more traffic at any given time. But that would still serve the purpose right? Because tuning your application to get that extra juice out of your apis, will take time and effort, and not everyone has it. If business demands it, you put your service on an auto scaling cluster and wash your hands off the dust.</p>
+<!--more-->
+
+
+<p>If you ask an engineer working at a startup, the answer would probably be Response Time, since they need to make do with a limited set of resources. Where as if you ask an Engineering Manager from a multi billion dollar giant, you would probably hear, &ldquo;throw more machines at it.&rdquo; I&rsquo;m not saying that folks from bigger companies do not build their services well, but it all boils down to the amount of time and money they have in hand.</p>
+
+<p>Scaling a system horizontally doesn&rsquo;t necessarily increase the response time. As very rightly pointed out <a href="http://use-the-index-luke.com/sql/testing-scalability/response-time-throughput-scaling-horizontal">here</a>, horizontal scaling is just like adding more lanes to a high traffic road. It need not necessarily make the traffic move faster, it just accomodates more traffic at any given time. But that would still serve the purpose. Because tuning your application to get that extra juice out of your apis, will take time and effort, and not everyone has it. Not every team, or business requirement caters to it. If business demands scale, easiest way would be to set up the service on an auto scaling architecture.</p>
 
 <p>Let me give you an example, you wrote a service and it gives you a 300 ms response time. You believe you&rsquo;ve done an OK job, you are not specifically proud of this, and you&rsquo;ve done better jobs before. So, deadlines are approaching and you need to ship this out. You have a throughput of 3 requests per second per core. You extrapolate your numbers and give your manager the bill - number of machines needed. He takes your word and haunts dev ops for the machines. Heard the story before? May be you have :).</p>
 
-<p>But, there is this little thing, that perfectionist conscience, that nags you in your dreams, asking you.. Have you tried it all? Is 300 ms the best your service can do? You know that it&rsquo;s not. You can atleast make it a 200ms. That would boost your throughput by a 66 %. But, dead lines are approaching, you just take the easier route. You let the machines take care of it. What do you do, you throw more machines at it, and you move on with your life.</p>
+<p><span class='pullquote-right' data-pullquote='What do you do, you throw more machines at it, and you move on with your life.'>
+But, there is this little thing, that perfectionist conscience, that nags you in your dreams, asking you.. Have you tried it all? Is 300 ms the best your service can do? You know that it&rsquo;s not. You can definitely push it to a  200ms. That would boost your throughput by 66%. But, dead lines are approaching, you just take the easier route. You let the machines take care of it. What do you do, you throw more machines at it, and you move on with your life.
+</span></p>
 
-<p>I think, this problem goes deeper into the org philosophy. If the organisation&rsquo;s goals align to understand developer&rsquo;s conscience along with business needs, we will all be better developers, sleeping peacefully without dark dreams about poorly written APIs haunting us. If not, well, we have a word for it, and its called tech debt.</p>
+<p>I think, this problem goes deeper into the org philosophy. If the organisation&rsquo;s goals align to understand developer&rsquo;s conscience along with business needs, we will all be better developers, sleeping peacefully without dark haunting dreams about poorly written APIs. If not, well, we have a word for it, and its called tech debt.</p>
+
+<p>Thanks to <a href="https://twitter.com/cmdr2">Shashank Sekhar</a> for patiently contributing to this rant. This does not add any business value, and neither does it solve a problem, but hey, it&rsquo;s out there and that&rsquo;s weight off my chest.</p>
 ]]></content>
   </entry>
   
