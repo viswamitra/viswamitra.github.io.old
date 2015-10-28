@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://viswamitra.github.io/blog/2015/10/28/sample-post/</loc>
-    <lastmod>2015-10-28T12:05:06+05:30</lastmod>
-  </url>
-  <url>
     <loc>http://viswamitra.github.io/blog/2015/03/02/throughput-response-time-and-money/</loc>
     <lastmod>2015-03-02T14:12:23+05:30</lastmod>
   </url>
@@ -24,6 +20,12 @@
   </url>
   <url>
     <loc>http://viswamitra.github.io/blog/archives/</loc>
+  </url>
+  <url>
+    <loc>http://viswamitra.github.io/projects/</loc>
+  </url>
+  <url>
+    <loc>http://viswamitra.github.io/books/</loc>
   </url>
   <url>
     <loc>http://viswamitra.github.io/about-me/</loc>
