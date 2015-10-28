@@ -4,7 +4,7 @@
   <title><![CDATA[Abhiram Viswamitra]]></title>
   <link href="http://viswamitra.github.io/atom.xml" rel="self"/>
   <link href="http://viswamitra.github.io/"/>
-  <updated>2015-10-28T12:01:00+05:30</updated>
+  <updated>2015-10-28T12:05:46+05:30</updated>
   <id>http://viswamitra.github.io/</id>
   <author>
     <name><![CDATA[Abhiram]]></name>
@@ -12,6 +12,15 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Sample Post]]></title>
+    <link href="http://viswamitra.github.io/blog/2015/10/28/sample-post/"/>
+    <updated>2015-10-28T12:05:06+05:30</updated>
+    <id>http://viswamitra.github.io/blog/2015/10/28/sample-post</id>
+    <content type="html"><![CDATA[<p>this is a sample post to test</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Throughput, Response Time and Money!]]></title>
